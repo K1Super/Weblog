@@ -3,7 +3,7 @@ const CONFIG = Object.freeze({
     // 导航栏配置
     nav: {
         profile: {
-            avatar: 'https://via.placeholder.com/200x200/4A90E2/FFFFFF?text=KLord',
+            avatar: 'https://picsum.photos/100/100?random=4',
             name: 'KLord',
             description: '热爱生活，记录美好'
         },
@@ -17,7 +17,7 @@ const CONFIG = Object.freeze({
     
     // 个人资料及导航配置
     profile: {
-        avatar: 'https://via.placeholder.com/200x200/4A90E2/FFFFFF?text=KLord',
+        avatar: 'https://picsum.photos/200/200?random=3',
         name: 'KLord',
         title: '热爱生活，记录美好'
     },
@@ -30,19 +30,19 @@ const CONFIG = Object.freeze({
         { id: 'about', label: '关于我', icon: 'fas fa-user' }
     ],
     
-    // 登录凭证
+    // 登录凭证 (密码已加密存储)
     login: {
         username: 'KLord',
-        password: '20041002'
+        password: 'ab2f193ad3e0fcc5632f7e5234e05695d6022ca7793382f2e1b5198a673208fe' // SHA256(20041002 + salt)
     },
 
     // GitHub配置用于内容持久化
     github: {
         // GitHub Personal Access Token (需要gist权限)
-        // 注意：不要在代码中硬编码token！请使用环境变量或在运行时设置
-        token: process.env.GITHUB_TOKEN,
+        // 注意：浏览器环境中无法直接访问环境变量，请在运行时设置
+        token: (typeof window !== 'undefined' && window.GITHUB_TOKEN) || null,
         // Gist ID 用于存储关于我页面的内容
-        gistId: process.env.GIST_ID,
+        gistId: (typeof window !== 'undefined' && window.GIST_ID) || null,
         // Gist文件名
         filename: 'about-content.json'
     }

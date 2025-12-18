@@ -66,11 +66,10 @@ async function handleLogin(event) {
             return;
         }
 
-        // 加密并验证密码
+        // 对用户输入的密码进行加密，与存储的哈希值比较
         const hashedPassword = encryptPassword(password);
-        const correctHash = encryptPassword(CONFIG.login.password);
-        
-        if (hashedPassword === correctHash) {
+
+        if (hashedPassword === CONFIG.login.password) {
             // 登录成功 - 清除错误提示
             clearError();
             const token = generateToken();
@@ -83,7 +82,7 @@ async function handleLogin(event) {
             // 登录失败
             loginAttempts.count++;
             loginAttempts.lastAttempt = Date.now();
-            
+
             if (loginAttempts.count >= AUTH_CONFIG.security.maxAttempts) {
                 loginAttempts.locked = true;
                 showError('登录失败次数过多，账户已锁定');

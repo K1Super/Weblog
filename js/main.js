@@ -196,24 +196,34 @@ function renderHome() {
 
 // 渲染导航栏
 function renderNav() {
+    console.log('renderNav called, CONFIG:', typeof CONFIG, CONFIG);
+    if (!CONFIG || !CONFIG.nav) {
+        console.error('CONFIG.nav is not available');
+        return;
+    }
+
     // 渲染个人资料部分
     const profileSection = document.querySelector('.profile-section');
-    profileSection.innerHTML = `
-        <img src="${CONFIG.nav.profile.avatar}" alt="头像" class="avatar" onerror="handleImageError(this)">
-        <h2>${CONFIG.nav.profile.name}</h2>
-        <p>${CONFIG.nav.profile.description}</p>
-    `;
+    if (profileSection) {
+        profileSection.innerHTML = `
+            <img src="${CONFIG.nav.profile.avatar}" alt="头像" class="avatar" onerror="handleImageError(this)">
+            <h2>${CONFIG.nav.profile.name}</h2>
+            <p>${CONFIG.nav.profile.description}</p>
+        `;
+    }
 
     // 渲染导航链接
     const navLinks = document.querySelector('.nav-links');
-    navLinks.innerHTML = CONFIG.nav.links.map(link => `
-        <li>
-            <a href="#${link.id}" data-section="${link.id}">
-                <i class="${link.icon}"></i>
-                <span>${link.text}</span>
-            </a>
-        </li>
-    `).join('');
+    if (navLinks && CONFIG.nav.links) {
+        navLinks.innerHTML = CONFIG.nav.links.map(link => `
+            <li>
+                <a href="#${link.id}" data-section="${link.id}">
+                    <i class="${link.icon}"></i>
+                    <span>${link.text}</span>
+                </a>
+            </li>
+        `).join('');
+    }
 }
 
 // 优化初始化函数

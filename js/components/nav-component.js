@@ -14,7 +14,10 @@ function initNav() {
     const homeLink = document.querySelector('.nav-links a[href="#home"]');
     if (homeLink) {
         homeLink.classList.add('active');
-        homeLink.querySelector('.nav-bg').style.transform = 'translateX(0)';
+        const bg = homeLink.querySelector('.nav-bg');
+        if (bg) {
+            bg.style.transform = 'translateX(0)';
+        }
         homeLink.style.color = '#ffffff';
     }
 
@@ -31,13 +34,18 @@ function initNav() {
             const bg = l.querySelector('.nav-bg');
             l.classList.remove('active');
             l.style.color = 'var(--text-color)';
-            bg.style.transform = 'translateX(-100%)';
+            if (bg) {
+                bg.style.transform = 'translateX(-100%)';
+            }
         });
 
         // 激活当前导航
         link.classList.add('active');
         link.style.color = '#ffffff';
-        link.querySelector('.nav-bg').style.transform = 'translateX(0)';
+        const activeBg = link.querySelector('.nav-bg');
+        if (activeBg) {
+            activeBg.style.transform = 'translateX(0)';
+        }
         
         // 更新内容区域
         sections.forEach(s => s.classList.remove('active'));
@@ -74,7 +82,7 @@ function initNavigation() {
     const navLinks = document.querySelector('.nav-links');
     
     // 设置个人资料部分 - 获取最新的头像URL
-    const currentAvatar = localStorage.getItem('userAvatar') || 'https://via.placeholder.com/100x100/4A90E2/FFFFFF?text=K';
+    const currentAvatar = localStorage.getItem('userAvatar') || 'https://picsum.photos/100/100?random=1';
     profileSection.innerHTML = `
         <img src="${currentAvatar}" alt="个人头像" class="avatar" id="navAvatar">
         <h2>KLord</h2>
@@ -107,6 +115,6 @@ function initNavigation() {
 // 处理图片加载错误
 function handleImageError(img) {
     console.log('头像加载失败，使用默认头像');
-    img.src = 'https://via.placeholder.com/100x100/4A90E2/FFFFFF?text=K';
+    img.src = 'https://picsum.photos/200/200?random=999';
     img.onerror = null; // 防止无限循环
 }
