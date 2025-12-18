@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KLord的个人空间</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Long+Cang&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/base/reset.css">
+    <link rel="stylesheet" href="styles/components/navbar.css">
+    <link rel="stylesheet" href="styles/components/blocks.css">
+    <link rel="stylesheet" href="styles/pages/login.css">
+    <link rel="stylesheet" href="styles/pages/login-core.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="js/auth/auth-config.js"></script>
+    <script src="js/config/app-config.js"></script>
+</head>
+<body>
+    <!-- 添加背景效果容器 -->
+    <div class="background-effects"></div>
+    <div class="cursor-follower"></div>
+    <!-- 添加漂浮装饰元素 -->
+    <div class="floating-elements">
+        <div class="floating-element" style="top: 10%; left: 10%; width: 60px; height: 60px;"></div>
+        <div class="floating-element" style="top: 20%; right: 15%; width: 40px; height: 40px;"></div>
+        <div class="floating-element" style="bottom: 15%; left: 20%; width: 50px; height: 50px;"></div>
+        <div class="floating-element" style="bottom: 25%; right: 10%; width: 45px; height: 45px;"></div>
+    </div>
+    
+    <!-- 登录部分 -->
+    <div class="login-container" id="loginSection">
+        <div class="login-box">
+            <div class="login-header">
+                <img src="https://via.placeholder.com/100x100/4A90E2/FFFFFF?text=K" alt="头像" class="login-avatar">
+                <p style="color: rgba(41, 38, 38, 0.8);">记录生活，分享快乐</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="用户名" value="KLord">
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="密码">
+                </div>
+                <div class="form-options">
+                    <a href="#" class="forgot-password" onclick="showHint(event)" style="text-decoration: none;">提示</a>
+                </div>
+                <button type="submit" class="login-btn">
+                    <span>登录</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="hintModal" class="hint-modal">
+        <div class="hint-content">
+            <p>上天垂光兮熙予以青春，</p>
+            <p>今日何日兮共此良辰</p>
+        </div>
+    </div>
+    
+    <!-- 左侧导航栏 -->
+    <nav class="side-nav" id="mainNavigation" style="display: none;">
+        <div class="nav-content">
+            <div class="profile-section"></div>
+            <ul class="nav-links"></ul>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>退出登录</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content" id="mainContent" style="display: none;">
+        <!-- 首页部分 -->
+        <section id="home" class="section active">
+            <div class="container">
+                <div class="intro-section">
+                    <h1 class="intro-title">
+                        Hello I'm <span class="highlight">KLord</span>
+                    </h1>
+                    <div class="intro-subtitle">
+                        <span class="role">👨‍💻 Full Stack Developer</span>
+                    </div>
+                    <p class="intro-text">
+                        <span class="text-icon">📝</span>
+                        The only way to do <span class="accent">great</span> is to <span class="accent">love</span> what you do.
+                    </p>
+                    
+                    <!-- 社交链接 -->
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-weixin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-qq"></i></a>
+                    </div>
+
+                    <!-- 音律跳动特效 -->
+                    <div class="audio-visualizer">
+                        <div class="audio-bar"></div>
+                        <div class="audio-bar"></div>
+                        <div class="audio-bar"></div>
+                        <div class="audio-bar"></div>
+                        <div class="audio-bar"></div>
+                        <div class="audio-bar"></div>
+                        <div class="audio-bar"></div>
+                        <div class="audio-bar"></div>
+                    </div>
+                </div>
+
+                <!-- 粒子游戏 -->
+                <div class="particle-game">
+                    <canvas id="particleCanvas"></canvas>
+                    <div class="game-info">
+                        <span class="game-title">Particle Chaser</span>
+                        <span class="game-score">Score: <span id="score">0</span></span>
+                    </div>
+                </div>
+
+                <!-- 站点导航卡片 -->
+                <div class="site-section">
+                    <div class="site-cards">
+                        <a href="#" class="site-card">
+                            <div class="card-icon">🤖</div>
+                            <div class="card-content">
+                                <h3>博客</h3>
+                            </div>
+                        </a>
+                        <a href="#" class="site-card">
+                            <div class="card-icon">👻</div>
+                            <div class="card-content">
+                                <h3>云盘</h3>
+                            </div>
+                        </a>
+                        <a href="https://github.com/K1Super" target="_blank" class="site-card">
+                            <div class="card-icon">🎀</div>
+                            <div class="card-content">
+                                <h3>实验室</h3>
+                            </div>
+                        </a>
+                        <a href="#" class="site-card">
+                            <div class="card-icon">🔮</div>
+                            <div class="card-content">
+                                <h3>工具箱</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 项目集部分 -->
+        <section id="projects" class="section">
+            <div class="container">
+                <!-- 项目集内容将在这里添加 -->
+            </div>
+        </section>
+
+        <!-- 资源库部分 -->
+        <section id="resources" class="section">
+            <div class="container">
+                <!-- 资源库内容将在这里添加 -->
+            </div>
+        </section>
+
+        <!-- 关于我部分 -->
+        <section id="about" class="section">
+            <div class="container">
+                <div class="about-content">
+                    <!-- 编辑按钮 -->
+                    <button class="about-edit-btn" id="aboutEditBtn" title="编辑内容">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <div class="about-profile">
+                        <div class="profile-image">
+                            <img src="https://via.placeholder.com/200x200/4A90E2/FFFFFF?text=KLord" alt="个人照片">
+                        </div>
+                        <div class="profile-info">
+                            <h2>KLord</h2>
+                            <p class="subtitle">全栈开发工程师</p>
+                            <p class="bio">热爱编程和创意，善于解决问题，喜欢挑战自我。不断学习新技术，努力创造更好的用户体验和解决方案。</p>
+                        </div>
+                    </div>
+                    <div class="about-sections">
+                        <!-- 内容将由JavaScript动态加载 -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 汉堡菜单按钮 -->
+    <button class="menu-toggle" id="menuToggle" style="display: none;" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- 脚本文件 -->
+    <script src="js/auth/auth-handler.js"></script>
+    <script src="js/auth/login-handler.js"></script>
+    <script src="js/animations/login-animation.js"></script>
+    <script src="js/components/nav-component.js"></script>
+    <script src="js/components/avatar-manager.js"></script>
+    <script src="js/components/about-editor.js"></script>
+    <script src="js/animations/global.js"></script>
+    <script src="js/components/responsive-layout.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/animations/particle-animation.js"></script>
+    <script>
+        // 整合登录和主页的脚本
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查登录状态
+            checkLoginStatus();
+            
+            // 登录表单提交处理
+            document.getElementById('loginForm').addEventListener('submit', function(event) {
+                handleLogin(event);
+            });
+
+            // 不需要在输入时自动清除错误提示，让错误持续显示直到登录成功
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+
+            // 监听登录状态变化，用于初始化粒子游戏
+            window.addEventListener('loginStateChanged', function() {
+                console.log('登录状态变化，检查是否需要初始化粒子游戏');
+                if (sessionStorage.getItem('loginStatus') === 'true') {
+                    // 延迟初始化粒子游戏，确保DOM已渲染
+                    setTimeout(() => {
+                        if (typeof initParticleGame === 'function') {
+                            initParticleGame();
+                        }
+                    }, 200);
+                }
+            });
+        });
+        
+        // 检查登录状态函数
+        function checkLoginStatus() {
+            const loginStatus = sessionStorage.getItem('loginStatus');
+            const loginSection = document.getElementById('loginSection');
+            const mainNavigation = document.getElementById('mainNavigation');
+            const mainContent = document.getElementById('mainContent');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            if (loginStatus === 'true') {
+                // 已登录，显示主页内容
+                loginSection.style.display = 'none';
+                mainNavigation.style.display = 'block';
+                mainContent.style.display = 'block';
+                menuToggle.style.display = 'block';
+                // 初始化主页所需的功能
+                if (typeof initMainPage === 'function') {
+                    initMainPage();
+                }
+                // 触发登录状态变化事件
+                window.dispatchEvent(new Event('loginStateChanged'));
+            } else {
+                // 未登录，显示登录页面
+                loginSection.style.display = 'flex';
+                mainNavigation.style.display = 'none';
+                mainContent.style.display = 'none';
+                menuToggle.style.display = 'none';
+            }
+        }
+        
+        // 退出登录函数
+        function logout() {
+            sessionStorage.clear();
+            checkLoginStatus();
+        }
+    </script>
+
+</body>
+</html>

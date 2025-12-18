@@ -1,0 +1,23 @@
+{
+  "name": "KLord",
+  "title": "全栈开发工程师",
+  "bio": "融汇全栈，精研架构，巧筑实功",
+  "hobbies": [
+    "编程",
+    "音乐",
+    "游戏",
+    "摄影",
+    "旅行"
+  ],
+  "quotes": [
+    {
+      "text": "The only way to do great work is to love what you do.",
+      "author": "Steve Jobs"
+    }
+  ],
+  "contacts": {
+    "email": "pureyyds@163.com",
+    "github": "https://github.com/K1Super",
+    "qq": "2123367071"
+  }
+}
