@@ -270,6 +270,11 @@ async function initMainPage() {
         await initProjectManager();
     }
 
+    // 初始化资源管理器
+    if (typeof initResourceManager === 'function') {
+        initResourceManager();
+    }
+
     // 初始化粒子游戏 - 将此移至最后，确保DOM元素已经渲染
     setTimeout(() => {
         if (typeof initParticleGame === 'function') {

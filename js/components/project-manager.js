@@ -488,6 +488,279 @@ function initProjectManager() {
     return projectManager;
 }
 
+// 资源管理器
+class ResourceManager {
+    constructor() {
+        this.storageKey = 'userResources';
+        this.resources = [];
+        this.isOnline = false;
+        this.githubService = new GitHubService();
+        this.init();
+    }
+
+    async init() {
+        await this.loadResources();
+        this.renderResources();
+        this.bindEvents();
+    }
+
+    bindEvents() {
+        // 绑定加号按钮点击事件
+        const addBtn = document.querySelector('.add-resource-btn');
+        if (addBtn) {
+            addBtn.addEventListener('click', () => {
+                this.addResource();
+            });
+        }
+    }
+
+    async loadResources() {
+        // 优先从GitHub加载，否则从localStorage加载
+        if (this.githubService.isConfigured()) {
+            try {
+                const githubData = await this.githubService.loadData();
+                if (githubData && githubData.length > 0) {
+                    this.resources = githubData;
+                    this.isOnline = true;
+                    this.saveToLocalStorage();
+                    return;
+                }
+            } catch (error) {
+                console.warn('从GitHub加载资源失败:', error);
+            }
+        }
+
+        this.resources = this.loadFromLocalStorage();
+        this.isOnline = false;
+    }
+
+    async saveResources() {
+        this.saveToLocalStorage();
+
+        if (this.githubService.isConfigured() && this.isOnline) {
+            try {
+                await this.githubService.saveData(this.resources);
+                console.log('资源数据已同步到GitHub');
+            } catch (error) {
+                console.error('保存到GitHub失败:', error);
+            }
+        }
+    }
+
+    loadFromLocalStorage() {
+        try {
+            const stored = localStorage.getItem(this.storageKey);
+            return stored ? JSON.parse(stored) : [];
+        } catch (error) {
+            console.error('从localStorage加载资源失败:', error);
+            return [];
+        }
+    }
+
+    saveToLocalStorage() {
+        try {
+            localStorage.setItem(this.storageKey, JSON.stringify(this.resources));
+        } catch (error) {
+            console.error('保存到localStorage失败:', error);
+        }
+    }
+
+    addResource() {
+        const newResource = {
+            id: Date.now().toString(),
+            title: '',
+            link: '',
+            createdAt: new Date().toISOString()
+        };
+
+        this.resources.unshift(newResource); // 添加到开头
+        this.saveResources();
+        this.renderResources();
+
+        // 聚焦到新添加的标题输入框
+        setTimeout(() => {
+            const titleInputs = document.querySelectorAll('.resource-title-input');
+            if (titleInputs.length > 0) {
+                titleInputs[0].focus();
+            }
+        }, 100);
+    }
+
+    updateResource(id, updates) {
+        const resource = this.resources.find(r => r.id === id);
+        if (resource) {
+            Object.assign(resource, updates);
+            this.saveResources();
+            this.renderResources();
+        }
+    }
+
+    deleteResource(id) {
+        console.log('Deleting resource:', id);
+        // 找到要删除的资源项
+        const resourceItem = document.querySelector(`.resource-item[data-resource-id="${id}"]`);
+        console.log('Found resource item:', resourceItem);
+
+        if (resourceItem) {
+            // 添加删除动画
+            resourceItem.style.transition = 'all 0.3s ease';
+            resourceItem.style.opacity = '0';
+            resourceItem.style.transform = 'translateX(-20px)';
+
+            // 立即更新数据
+            this.resources = this.resources.filter(r => r.id !== id);
+            this.saveResources();
+
+            // 等待动画完成后重新渲染
+            setTimeout(() => {
+                this.renderResources();
+            }, 300);
+        } else {
+            console.error('Resource item not found in DOM');
+            // 如果DOM元素不存在，直接更新数据并重新渲染
+            this.resources = this.resources.filter(r => r.id !== id);
+            this.saveResources();
+            this.renderResources();
+        }
+    }
+
+    renderResources() {
+        const contentArea = document.querySelector('#resources .content-area');
+        if (!contentArea) return;
+
+        // 移除现有的资源列表
+        const existingList = contentArea.querySelector('.resources-list');
+        if (existingList) {
+            existingList.remove();
+        }
+
+        // 如果没有资源，显示空状态
+        if (this.resources.length === 0) {
+            const emptyState = document.querySelector('.resources-empty');
+            if (emptyState) {
+                emptyState.style.display = 'block';
+            }
+            return;
+        }
+
+        // 隐藏空状态
+        const emptyState = document.querySelector('.resources-empty');
+        if (emptyState) {
+            emptyState.style.display = 'none';
+        }
+
+        // 创建资源列表
+        const resourcesList = document.createElement('div');
+        resourcesList.className = 'resources-list';
+
+        this.resources.forEach((resource, index) => {
+            const resourceItem = this.createResourceItem(resource, index);
+            resourcesList.appendChild(resourceItem);
+        });
+
+        // 在空状态之前插入
+        const emptyStateEl = contentArea.querySelector('.resources-empty');
+        if (emptyStateEl) {
+            contentArea.insertBefore(resourcesList, emptyStateEl);
+        } else {
+            contentArea.appendChild(resourcesList);
+        }
+    }
+
+    createResourceItem(resource, index) {
+        const item = document.createElement('div');
+        item.className = 'resource-item';
+        item.dataset.resourceId = resource.id;
+
+        // 标题输入框容器
+        const titleContainer = document.createElement('div');
+        titleContainer.className = 'resource-input-container';
+
+        const titleIcon = document.createElement('i');
+        titleIcon.className = 'fas fa-file-alt resource-input-icon';
+
+        const titleInput = document.createElement('input');
+        titleInput.type = 'text';
+        titleInput.className = 'resource-title-input';
+        titleInput.placeholder = '请输入资源标题';
+        titleInput.value = resource.title || '';
+        titleInput.addEventListener('blur', () => {
+            this.updateResource(resource.id, { title: titleInput.value });
+        });
+        titleInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                titleInput.blur();
+            }
+        });
+
+        titleContainer.appendChild(titleIcon);
+        titleContainer.appendChild(titleInput);
+
+        // 链接输入框容器
+        const linkContainer = document.createElement('div');
+        linkContainer.className = 'resource-input-container';
+
+        const linkIcon = document.createElement('i');
+        linkIcon.className = 'fas fa-link resource-input-icon';
+
+        const linkInput = document.createElement('input');
+        linkInput.type = 'url';
+        linkInput.className = 'resource-link-input';
+        linkInput.placeholder = '请输入资源链接 (可选)';
+        linkInput.value = resource.link || '';
+        linkInput.addEventListener('blur', () => {
+            this.updateResource(resource.id, { link: linkInput.value });
+        });
+        linkInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                linkInput.blur();
+            }
+        });
+
+        linkContainer.appendChild(linkIcon);
+        linkContainer.appendChild(linkInput);
+
+        // 删除按钮
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'resource-delete-btn';
+        deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+        deleteBtn.title = '删除资源';
+        deleteBtn.addEventListener('click', async () => {
+            const confirmed = await showCustomConfirm(
+                '确定要删除这个资源吗？',
+                '删除资源',
+                '删除',
+                '取消'
+            );
+            if (confirmed) {
+                this.deleteResource(resource.id);
+            }
+        });
+
+        // 组装元素
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'resource-content';
+        contentWrapper.appendChild(titleContainer);
+        contentWrapper.appendChild(linkContainer);
+
+        item.appendChild(contentWrapper);
+        item.appendChild(deleteBtn);
+
+        return item;
+    }
+}
+
+// 创建全局资源管理器实例
+let resourceManager;
+
+// 初始化资源管理器
+function initResourceManager() {
+    if (!resourceManager) {
+        resourceManager = new ResourceManager();
+    }
+    return resourceManager;
+}
+
 // 直接添加项目的方法供settings-handler使用
 function addProjectDirectly() {
     // 确保项目管理器已初始化

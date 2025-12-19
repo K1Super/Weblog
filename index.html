@@ -210,77 +210,24 @@
         <section id="resources" class="section">
             <div class="container">
                 <div class="content-area">
-                    <!-- 搜索和筛选区域 -->
-                    <div class="resources-controls">
-                        <div class="search-section">
-                            <div class="search-input-wrapper">
-                                <i class="fas fa-search search-icon"></i>
-                                <input type="text" class="search-input" placeholder="搜索资源...">
-                            </div>
-                        </div>
-                        <div class="filter-section">
-                            <button class="filter-toggle">
-                                <i class="fas fa-filter"></i>
-                                <span>筛选</span>
+                    <!-- 简洁搜索界面 -->
+                    <div class="resources-search-header">
+                        <div class="search-input-container">
+                            <input type="text" class="resources-search-input" placeholder="搜索资源...">
+                            <i class="fas fa-search search-icon-left"></i>
+                            <button class="add-resource-btn">
+                                <i class="fas fa-plus"></i>
                             </button>
-                            <div class="filter-options">
-                                <select class="filter-select">
-                                    <option value="">全部分类</option>
-                                    <option value="design">设计资源</option>
-                                    <option value="development">开发工具</option>
-                                    <option value="data">数据资源</option>
-                                    <option value="media">媒体素材</option>
-                                </select>
-                                <select class="sort-select">
-                                    <option value="newest">最新发布</option>
-                                    <option value="popular">最受欢迎</option>
-                                    <option value="download">下载最多</option>
-                                </select>
-                            </div>
                         </div>
                     </div>
 
-                    <!-- 分类导航 -->
-                    <div class="categories-section">
-                        <div class="categories-header">
-                            <h3>分类浏览</h3>
-                            <button class="categories-toggle">
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
+                    <!-- 空状态提示 -->
+                    <div class="resources-empty">
+                        <div class="empty-icon">
+                            <i class="fas fa-database"></i>
                         </div>
-                        <div class="categories-content">
-                            <div class="category-group">
-                                <h4>设计资源</h4>
-                                <div class="subcategories">
-                                    <span class="subcategory active">图标素材</span>
-                                    <span class="subcategory">UI 模板</span>
-                                    <span class="subcategory">配色方案</span>
-                                    <span class="subcategory">字体资源</span>
-                                </div>
-                            </div>
-                            <div class="category-group">
-                                <h4>开发工具</h4>
-                                <div class="subcategories">
-                                    <span class="subcategory">代码库</span>
-                                    <span class="subcategory">框架模板</span>
-                                    <span class="subcategory">API 工具</span>
-                                    <span class="subcategory">测试工具</span>
-                                </div>
-                            </div>
-                            <div class="category-group">
-                                <h4>数据资源</h4>
-                                <div class="subcategories">
-                                    <span class="subcategory">数据集</span>
-                                    <span class="subcategory">API 接口</span>
-                                    <span class="subcategory">统计数据</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 资源网格 -->
-                    <div class="resources-grid">
-                        <!-- 资源卡片将由JavaScript动态加载 -->
+                        <h3>资源库</h3>
+                        <p>暂无资源，点击上方加号添加新资源</p>
                     </div>
                 </div>
             </div>
