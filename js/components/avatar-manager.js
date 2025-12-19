@@ -11,7 +11,9 @@ class AvatarManager {
 
     // 获取当前头像URL
     getCurrentAvatar() {
-        return localStorage.getItem('userAvatar') || 'https://ui-avatars.com/api/?name=KLord&size=160&background=4A90E2&color=fff&format=png';
+        return localStorage.getItem('userAvatar') ||
+               window.DEFAULT_AVATAR ||
+               'https://ui-avatars.com/api/?name=KLord&size=160&background=4A90E2&color=fff&format=png';
     }
 
     // 设置头像URL
@@ -219,13 +221,16 @@ class AvatarManager {
 
     // 初始化
     init() {
-        // 更新所有现有头像
-        this.updateAllAvatars();
+        // 延迟执行，确保环境变量已加载
+        setTimeout(() => {
+            // 更新所有现有头像
+            this.updateAllAvatars();
 
-        // 初始化编辑功能（只在登录状态下）
-        if (sessionStorage.getItem('loginStatus') === 'true') {
-            this.initAvatarEditor();
-        }
+            // 初始化编辑功能（只在登录状态下）
+            if (sessionStorage.getItem('loginStatus') === 'true') {
+                this.initAvatarEditor();
+            }
+        }, 100);
     }
 }
 

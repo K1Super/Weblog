@@ -15,9 +15,18 @@
       "author": "Steve Jobs"
     }
   ],
-  "contacts": {
-    "email": "pureyyds@163.com",
-    "github": "https://github.com/K1Super",
-    "qq": "2123367071"
-  }
+  "contacts": [
+    {
+      "type": "email",
+      "value": "pureyyds@163.com"
+    },
+    {
+      "type": "github",
+      "value": "https://github.com/K1Super"
+    },
+    {
+      "type": "qq",
+      "value": "2123367071"
+    }
+  ]
 }

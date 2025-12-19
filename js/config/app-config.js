@@ -5,7 +5,7 @@ const CONFIG = Object.freeze({
         profile: {
             avatar: 'https://picsum.photos/100/100?random=4',
             name: 'KLord',
-            description: '热爱生活，记录美好'
+            description: '半溪明月，一枕清风'
         },
         links: [
             { id: 'home', icon: 'fas fa-home', text: '首页' },
@@ -17,9 +17,9 @@ const CONFIG = Object.freeze({
     
     // 个人资料及导航配置
     profile: {
-        avatar: 'https://picsum.photos/200/200?random=3',
+        avatar: (typeof window !== 'undefined' && window.DEFAULT_AVATAR) || 'https://picsum.photos/200/200?random=3',
         name: 'KLord',
-        title: '热爱生活，记录美好'
+        title: '半溪明月，一枕清风'
     },
     
     // 导航配置 - 保持与nav.links一致

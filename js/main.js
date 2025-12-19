@@ -183,11 +183,7 @@ function renderHome() {
         // 首页渲染完成，这里可以添加一些简单的动画或效果
         console.log('Home section rendered successfully');
 
-        // 可以在这里添加一些简单的动画效果
-        // 例如音频条动画
-        if (typeof animateAudioBars === 'function') {
-            animateAudioBars();
-        }
+        // 音频可视化效果已改为纯CSS实现，提供更流畅的动画体验
 
     } catch (error) {
         handleRenderError('home', error);
@@ -260,15 +256,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 初始化主页函数
-function initMainPage() {
+async function initMainPage() {
     console.log('初始化主页...');
-    
+
     // 初始化导航
     initializeNavigation();
-    
+
     // 初始化其他主页功能
     initializeMainContent();
-    
+
+    // 初始化项目管理器（异步）
+    if (typeof initProjectManager === 'function') {
+        await initProjectManager();
+    }
+
     // 初始化粒子游戏 - 将此移至最后，确保DOM元素已经渲染
     setTimeout(() => {
         if (typeof initParticleGame === 'function') {
@@ -355,6 +356,18 @@ function showSection(sectionId) {
             link.classList.add('active');
         }
     });
+    
+    // 如果切换到项目集页面，确保项目管理器已初始化
+    if (sectionId === 'projects') {
+        if (typeof initProjectManager === 'function') {
+            if (!projectManager) {
+                initProjectManager();
+            } else if (projectManager && projectManager.renderProjects) {
+                // 重新渲染项目（以防数据有更新）
+                projectManager.renderProjects();
+            }
+        }
+    }
 }
 
 // 初始化主要内容
@@ -429,20 +442,7 @@ function initializeAbout() {
     }
 }
 
-// 动画效果：音频条
-function animateAudioBars() {
-    const bars = document.querySelectorAll('.audio-bar');
-    
-    bars.forEach(bar => {
-        const height = Math.random() * 100;
-        const duration = 0.5 + Math.random() * 0.5;
-        
-        bar.style.height = `${height}%`;
-        bar.style.animationDuration = `${duration}s`;
-    });
-    
-    setTimeout(animateAudioBars, 500);
-}
+// 音频条动画已移至纯CSS实现，移除JavaScript动画以确保流畅的节奏
 
 // 切换菜单
 function toggleMenu() {

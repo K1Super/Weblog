@@ -1,27 +1,36 @@
-// 默认内容，当数据文件不存在时使用
-const DEFAULT_CONTENT = {
-    "name": "KLord",
-    "title": "全栈开发工程师",
-    "bio": "融汇全栈，精研架构，巧筑实功",
-    "hobbies": [
-        "编程",
-        "音乐",
-        "游戏",
-        "摄影",
-        "旅行",
-    ],
-    "quotes": [
-        {
-            "text": "The only way to do great work is to love what you do.",
-            "author": "Steve Jobs"
-        }
-    ],
-    "contacts": {
-        "email": "pureyyds@163.com",
-        "github": "https://github.com/K1Super",
-        "qq": "2123367071"
-    }
-};
+    // 默认内容，当数据文件不存在时使用
+    const DEFAULT_CONTENT = {
+        "name": "KLord",
+        "title": "全栈开发工程师",
+        "bio": "融汇全栈，精研架构，巧筑实功",
+        "hobbies": [
+            "编程",
+            "音乐",
+            "游戏",
+            "摄影",
+            "旅行",
+        ],
+        "quotes": [
+            {
+                "text": "The only way to do great work is to love what you do.",
+                "author": "Steve Jobs"
+            }
+        ],
+        "contacts": [
+            {
+                "type": "email",
+                "value": "pureyyds@163.com"
+            },
+            {
+                "type": "github",
+                "value": "https://github.com/K1Super"
+            },
+            {
+                "type": "qq",
+                "value": "2123367071"
+            }
+        ]
+    };
 
 // 关于我页面编辑器
 class AboutEditor {
@@ -71,6 +80,9 @@ class AboutEditor {
         // 使文字可编辑
         this.makeContentEditable();
 
+        // 使联系方式卡片可编辑
+        this.makeContactCardsEditable();
+
         // 显示编辑工具栏
         this.showEditToolbar();
 
@@ -86,11 +98,17 @@ class AboutEditor {
         const aboutContent = document.querySelector('.about-content');
         aboutContent.classList.remove('editing');
 
+        // 强制重新渲染联系方式卡片，确保删除按钮隐藏
+        this.refreshContactCards();
+
         // 移除兴趣爱好添加按钮
         this.removeHobbyAddButton();
 
         // 使文字不可编辑
         this.makeContentNonEditable();
+
+        // 使联系方式卡片不可编辑
+        this.makeContactCardsNonEditable();
 
         // 隐藏编辑工具栏
         this.hideEditToolbar();
@@ -301,26 +319,15 @@ class AboutEditor {
         contentToSave.quotes = quotes;
 
         // 保存联系方式
-        const contacts = {};
-        const contactItems = document.querySelectorAll('.contact-item');
-        contactItems.forEach(item => {
-            const spans = item.querySelectorAll('span');
-            if (spans.length >= 2) {
-                const label = spans[0].textContent.trim();
-                const value = spans[1].textContent.trim();
-                if (label && value) {
-                    // 根据标签确定类型
-                    if (label.includes('邮箱') || label.includes('@')) {
-                        contacts.email = value;
-                    } else if (label.includes('电话') || label.includes('手机')) {
-                        contacts.phone = value;
-                    } else if (label.includes('微信')) {
-                        contacts.wechat = value;
-                    } else if (label.includes('QQ')) {
-                        contacts.qq = value;
-                    } else {
-                        contacts[label] = value;
-                    }
+        const contacts = [];
+        const contactCards = document.querySelectorAll('.contact-card');
+        contactCards.forEach(card => {
+            const type = card.dataset.type;
+            const valueElement = card.querySelector('.contact-value');
+            if (valueElement && type) {
+                const value = valueElement.textContent.trim();
+                if (value) {
+                    contacts.push({ type, value });
                 }
             }
         });
@@ -447,6 +454,19 @@ class AboutEditor {
             content = DEFAULT_CONTENT;
         }
 
+        // 向后兼容：如果contacts是对象格式，转换成数组格式
+        if (content.contacts && !Array.isArray(content.contacts) && typeof content.contacts === 'object') {
+            const contactsArray = [];
+            Object.entries(content.contacts).forEach(([type, value]) => {
+                if (value) {
+                    contactsArray.push({ type, value });
+                }
+            });
+            content.contacts = contactsArray;
+            // 保存转换后的格式
+            this.saveContentToFile(content);
+        }
+
         // 应用内容到页面
         this.applyContentToPage(content);
     }
@@ -483,7 +503,7 @@ class AboutEditor {
                 const hobbiesSection = document.createElement('div');
                 hobbiesSection.className = 'about-section';
                 hobbiesSection.innerHTML = `
-                    <h3><i class="fas fa-heart"></i> 兴趣爱好</h3>
+                    <h3><i class="fas fa-heart"></i>喜好</h3>
                     <ul class="hobby-list">
                         ${content.hobbies.map(hobby => `<li>${hobby}</li>`).join('')}
                     </ul>
@@ -511,37 +531,70 @@ class AboutEditor {
             }
 
             // 创建联系方式section
-            if (content.contacts) {
+            if (content.contacts && Array.isArray(content.contacts)) {
                 console.log('创建联系方式section:', content.contacts);
                 const contactsSection = document.createElement('div');
                 contactsSection.className = 'about-section';
                 contactsSection.innerHTML = `<h3><i class="fas fa-paper-plane"></i> 联系方式</h3>`;
 
                 const contactContainer = document.createElement('div');
-                contactContainer.className = 'contact-info';
+                contactContainer.className = 'contact-cards-container';
 
-                const contactMappings = {
-                    email: { icon: 'fas fa-envelope', label: '邮箱' },
-                    github: { icon: 'fab fa-github', label: 'GitHub' },
-                    wechat: { icon: 'fab fa-weixin', label: '微信' },
-                    qq: { icon: 'fab fa-qq', label: 'QQ' }
-                };
+        const contactMappings = {
+            email: { icon: 'fas fa-envelope', label: '邮箱' },
+            github: { icon: 'fab fa-github', label: 'GitHub' },
+            qq: { icon: 'fab fa-qq', label: 'QQ' },
+            wechat: { icon: 'fab fa-weixin', label: '微信' },
+            phone: { icon: 'fas fa-phone', label: '电话' },
+            twitter: { icon: 'fab fa-twitter', label: 'Twitter' },
+            linkedin: { icon: 'fab fa-linkedin', label: 'LinkedIn' },
+            instagram: { icon: 'fab fa-instagram', label: 'Instagram' },
+            youtube: { icon: 'fab fa-youtube', label: 'YouTube' },
+            discord: { icon: 'fab fa-discord', label: 'Discord' },
+            telegram: { icon: 'fab fa-telegram', label: 'Telegram' },
+            whatsapp: { icon: 'fab fa-whatsapp', label: 'WhatsApp' },
+            skype: { icon: 'fab fa-skype', label: 'Skype' },
+            facebook: { icon: 'fab fa-facebook', label: 'Facebook' }
+        };
 
-                Object.entries(content.contacts).forEach(([type, value]) => {
-                    console.log('处理联系方式:', type, value);
-                    if (value) {
-                        const contactItem = document.createElement('div');
-                        contactItem.className = 'contact-item';
-                        const mapping = contactMappings[type] || { icon: 'fas fa-info-circle', label: type };
-                        contactItem.innerHTML = `
-                            <i class="${mapping.icon}"></i>
-                            <span>${mapping.label}</span>
-                            <span>${value}</span>
-                        `;
-                        contactContainer.appendChild(contactItem);
-                        console.log('添加了联系方式项:', contactItem.innerHTML);
+                content.contacts.forEach((contact, index) => {
+                    console.log('处理联系方式:', contact);
+                    if (contact && contact.type && contact.value) {
+                        const contactCard = document.createElement('div');
+                        contactCard.className = 'contact-card';
+                        contactCard.dataset.type = contact.type;
+                        const mapping = contactMappings[contact.type] || { icon: 'fas fa-info-circle', label: contact.type };
+
+                        // 创建图标容器
+                        const iconContainer = document.createElement('div');
+                        iconContainer.className = 'contact-icon';
+                        iconContainer.innerHTML = `<i class="${mapping.icon}"></i>`;
+                        contactCard.appendChild(iconContainer);
+
+                        // 在非编辑模式下，只显示简单的标签
+                        const labelContainer = document.createElement('div');
+                        labelContainer.className = 'contact-label';
+                        labelContainer.textContent = mapping.label;
+                        contactCard.appendChild(labelContainer);
+
+                        // 创建值容器
+                        const valueContainer = document.createElement('div');
+                        valueContainer.className = 'contact-value';
+                        valueContainer.textContent = contact.value;
+                        contactCard.appendChild(valueContainer);
+
+                        contactContainer.appendChild(contactCard);
+                        console.log('添加了联系方式卡片:', contactCard.innerHTML);
                     }
                 });
+
+                // 添加增加按钮
+                const addButton = document.createElement('button');
+                addButton.className = 'contact-add-btn';
+                addButton.innerHTML = '<i class="fas fa-plus"></i>';
+                addButton.title = '添加联系方式';
+                addButton.onclick = () => this.addNewContactCard();
+                contactContainer.appendChild(addButton);
 
                 contactsSection.appendChild(contactContainer);
                 aboutSections.appendChild(contactsSection);
@@ -640,6 +693,354 @@ class AboutEditor {
             selection.removeAllRanges();
             selection.addRange(range);
         }, 0);
+    }
+
+    // 删除联系方式卡片
+    deleteContactCard(buttonElement) {
+        const card = buttonElement.closest('.contact-card');
+        if (card) {
+            card.remove();
+            this.onContentChange();
+        }
+    }
+
+    // 添加新的联系方式卡片
+    addNewContactCard() {
+        const container = document.querySelector('.contact-cards-container');
+        if (!container) return;
+
+        // 创建新的联系方式卡片
+        const contactCard = document.createElement('div');
+        contactCard.className = 'contact-card';
+        contactCard.dataset.type = 'email'; // 默认类型
+
+        // 创建删除按钮
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'contact-delete-btn';
+        deleteBtn.innerHTML = '<i class="fas fa-minus"></i>';
+        deleteBtn.onclick = () => this.deleteContactCard(deleteBtn);
+        contactCard.appendChild(deleteBtn);
+
+        // 创建图标容器
+        const iconContainer = document.createElement('div');
+        iconContainer.className = 'contact-icon';
+        iconContainer.innerHTML = '<i class="fas fa-envelope"></i>';
+        contactCard.appendChild(iconContainer);
+
+        // 创建标签容器
+        const labelContainer = document.createElement('div');
+        labelContainer.className = 'contact-label';
+        // 内容为空时会通过CSS显示占位符
+        contactCard.appendChild(labelContainer);
+
+        // 创建值容器
+        const valueContainer = document.createElement('div');
+        valueContainer.className = 'contact-value';
+        // 内容为空时会通过CSS显示占位符
+        contactCard.appendChild(valueContainer);
+
+        // 插入到添加按钮之前
+        const addButton = container.querySelector('.contact-add-btn');
+        if (addButton) {
+            container.insertBefore(contactCard, addButton);
+        } else {
+            container.appendChild(contactCard);
+        }
+
+        // 使新卡片可编辑
+        this.makeContactCardEditable(contactCard);
+
+        // 聚焦到新卡片的值
+        setTimeout(() => {
+            const valueElement = contactCard.querySelector('.contact-value');
+            if (valueElement) {
+                valueElement.focus();
+                // 选中文本
+                const selection = window.getSelection();
+                const range = document.createRange();
+                range.selectNodeContents(valueElement);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }, 0);
+
+        this.onContentChange();
+    }
+
+    // 使所有联系方式卡片可编辑
+    makeContactCardsEditable() {
+        const contactCards = document.querySelectorAll('.contact-card');
+        contactCards.forEach(card => {
+            this.makeContactCardEditable(card);
+        });
+    }
+
+    // 使联系方式卡片不可编辑
+    makeContactCardsNonEditable() {
+        const contactCards = document.querySelectorAll('.contact-card');
+        contactCards.forEach(card => {
+            this.makeContactCardNonEditable(card);
+        });
+    }
+
+    // 使联系方式卡片可编辑
+    makeContactCardEditable(card) {
+        // 动态添加删除按钮
+        if (!card.querySelector('.contact-delete-btn')) {
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'contact-delete-btn';
+            deleteBtn.innerHTML = '<i class="fas fa-minus"></i>';
+            deleteBtn.onclick = () => this.deleteContactCard(deleteBtn);
+            card.insertBefore(deleteBtn, card.firstChild);
+        }
+
+        // 使标签可编辑
+        const labelElement = card.querySelector('.contact-label');
+        if (labelElement) {
+            labelElement.contentEditable = 'true';
+            labelElement.style.outline = 'none';
+
+            // 添加输入事件 - 智能图标匹配
+            labelElement.addEventListener('input', () => {
+                this.updateContactIcon(card);
+                this.onContentChange();
+            });
+
+            // 添加键盘事件
+            labelElement.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.saveChanges();
+                } else if (e.key === 'Escape') {
+                    this.cancelChanges();
+                }
+            });
+        }
+
+        const valueElement = card.querySelector('.contact-value');
+        if (valueElement) {
+            valueElement.contentEditable = 'true';
+            valueElement.style.outline = 'none';
+
+            // 添加输入事件 - 智能图标匹配
+            valueElement.addEventListener('input', () => {
+                this.updateContactIcon(card);
+                this.onContentChange();
+            });
+
+            // 添加键盘事件
+            valueElement.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.saveChanges();
+                } else if (e.key === 'Escape') {
+                    this.cancelChanges();
+                }
+            });
+        }
+
+        // 初始图标匹配
+        this.updateContactIcon(card);
+    }
+
+    // 使单个联系方式卡片不可编辑
+    makeContactCardNonEditable(card) {
+        const valueElement = card.querySelector('.contact-value');
+        if (valueElement) {
+            valueElement.contentEditable = 'false';
+            valueElement.style.outline = 'none';
+            // 移除事件监听器
+            valueElement.removeEventListener('input', this.onContentChange);
+            valueElement.removeEventListener('keydown', this.saveChanges);
+            valueElement.removeEventListener('keydown', this.cancelChanges);
+        }
+    }
+
+    // 刷新联系方式卡片
+    async refreshContactCards() {
+        try {
+            // 重新加载当前保存的内容
+            const currentContent = await this.loadContentFromFile();
+            if (currentContent && currentContent.contacts) {
+                // 只重新渲染联系方式部分
+                const contactContainer = document.querySelector('.contact-cards-container');
+                if (contactContainer) {
+                    // 清空现有卡片
+                    const existingCards = contactContainer.querySelectorAll('.contact-card');
+                    existingCards.forEach(card => card.remove());
+
+                    // 重新创建卡片
+                    const contactMappings = {
+                        email: { icon: 'fas fa-envelope', label: '邮箱' },
+                        github: { icon: 'fab fa-github', label: 'GitHub' },
+                        qq: { icon: 'fab fa-qq', label: 'QQ' },
+                        wechat: { icon: 'fab fa-weixin', label: '微信' },
+                        phone: { icon: 'fas fa-phone', label: '电话' }
+                    };
+
+                    currentContent.contacts.forEach((contact) => {
+                        if (contact && contact.type && contact.value) {
+                            const contactCard = document.createElement('div');
+                            contactCard.className = 'contact-card';
+                            contactCard.dataset.type = contact.type;
+                            const mapping = contactMappings[contact.type] || { icon: 'fas fa-info-circle', label: contact.type };
+                            contactCard.innerHTML = `
+                                <div class="contact-icon">
+                                    <i class="${mapping.icon}"></i>
+                                </div>
+                                <div class="contact-label">${mapping.label}</div>
+                                <div class="contact-value">${contact.value}</div>
+                            `;
+                            // 确保卡片在正确位置插入（在添加按钮之前）
+                            const addButton = contactContainer.querySelector('.contact-add-btn');
+                            if (addButton) {
+                                contactContainer.insertBefore(contactCard, addButton);
+                            } else {
+                                contactContainer.appendChild(contactCard);
+                            }
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('刷新联系方式卡片失败:', error);
+        }
+    }
+
+
+
+    // 更新联系方式图标 - 智能匹配
+    updateContactIcon(card) {
+        const labelElement = card.querySelector('.contact-label');
+        const valueElement = card.querySelector('.contact-value');
+        const iconElement = card.querySelector('.contact-icon i');
+
+        if (!iconElement) return;
+
+        // 获取标签和值的内容
+        const labelText = labelElement ? labelElement.textContent.toLowerCase() : '';
+        const valueText = valueElement ? valueElement.textContent.toLowerCase() : '';
+
+        // 图标到类型的映射
+        const iconToTypeMappings = {
+            'fas fa-envelope': 'email',
+            'fab fa-github': 'github',
+            'fab fa-qq': 'qq',
+            'fab fa-weixin': 'wechat',
+            'fas fa-phone': 'phone',
+            'fab fa-twitter': 'twitter',
+            'fab fa-linkedin': 'linkedin',
+            'fab fa-instagram': 'instagram',
+            'fab fa-youtube': 'youtube',
+            'fab fa-discord': 'discord',
+            'fab fa-telegram': 'telegram',
+            'fab fa-whatsapp': 'whatsapp',
+            'fab fa-skype': 'skype',
+            'fab fa-facebook': 'facebook'
+        };
+
+        // 关键词到图标的映射
+        const keywordMappings = {
+            // 邮箱相关
+            'fas fa-envelope': [
+                '邮箱', 'email', 'mail', '邮箱地址', '电子邮件', 'e-mail',
+                '@', '.com', '.cn', '.org', '.net', 'gmail', '163', 'qq.com',
+                'outlook', 'yahoo', 'hotmail'
+            ],
+
+            // GitHub相关
+            'fab fa-github': [
+                'github', 'git', '代码', '仓库', '开源', '编程', '开发',
+                'repository', 'repo', '开源项目'
+            ],
+
+            // QQ相关
+            'fab fa-qq': [
+                'qq', '腾讯', '企鹅', '腾讯qq', 'qq号', 'qq群'
+            ],
+
+            // 微信相关
+            'fab fa-weixin': [
+                '微信', 'weixin', 'weixin', '微信号', '微信公众号', '小程序'
+            ],
+
+            // 电话相关
+            'fas fa-phone': [
+                '电话', 'phone', '手机', 'mobile', '联系电话', '手机号',
+                'tel', '电话号码', '联系方式'
+            ],
+
+            // Twitter相关
+            'fab fa-twitter': [
+                'twitter', '推特', '微博', '社交', 'tweet'
+            ],
+
+            // LinkedIn相关
+            'fab fa-linkedin': [
+                'linkedin', '领英', '职业', '工作', '简历', '招聘'
+            ],
+
+            // Instagram相关
+            'fab fa-instagram': [
+                'instagram', 'ins', '照片', '图片', '美图', '摄影'
+            ],
+
+            // YouTube相关
+            'fab fa-youtube': [
+                'youtube', '视频', '直播', '影视', '媒体'
+            ],
+
+            // Discord相关
+            'fab fa-discord': [
+                'discord', '游戏', '聊天', '语音', '社区'
+            ],
+
+            // Telegram相关
+            'fab fa-telegram': [
+                'telegram', '电报', '消息', '通讯'
+            ],
+
+            // WhatsApp相关
+            'fab fa-whatsapp': [
+                'whatsapp', '消息', '通讯', '聊天'
+            ],
+
+            // Skype相关
+            'fab fa-skype': [
+                'skype', '微软', '视频通话', '语音通话'
+            ],
+
+            // Facebook相关
+            'fab fa-facebook': [
+                'facebook', '脸书', '社交网络', '社区'
+            ]
+        };
+
+        // 查找匹配的图标
+        let matchedIcon = 'fas fa-info-circle'; // 默认图标
+        let matchedType = 'email'; // 默认类型
+
+        for (const [iconClass, keywords] of Object.entries(keywordMappings)) {
+            // 检查标签是否包含关键词
+            if (keywords.some(keyword => labelText.includes(keyword))) {
+                matchedIcon = iconClass;
+                matchedType = iconToTypeMappings[iconClass] || 'email';
+                break;
+            }
+
+            // 检查值是否包含关键词
+            if (keywords.some(keyword => valueText.includes(keyword))) {
+                matchedIcon = iconClass;
+                matchedType = iconToTypeMappings[iconClass] || 'email';
+                break;
+            }
+        }
+
+        // 更新图标
+        iconElement.className = matchedIcon;
+
+        // 更新卡片的类型数据（用于保存）
+        card.dataset.type = matchedType;
     }
 
     // 显示成功消息（已删除，用户不需要提示）
