@@ -42,6 +42,7 @@ class AboutEditor {
 
     // 初始化
     init() {
+        console.log('AboutEditor 初始化');
         this.loadSavedContent();
         this.bindEditButton();
     }

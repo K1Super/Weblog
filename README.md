@@ -2,7 +2,7 @@
 
 一个功能丰富、设计精美的现代化个人网站系统，集成了博客展示、项目管理、资源库、用户系统等完整功能。
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Deployed-success)](https://你的用户名.github.io)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Deployed-success)](https://K1Super.github.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-blue)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
@@ -33,7 +33,7 @@
 ## 🚀 快速开始
 
 ### 方法一: 在线体验
-访问已部署的网站：[https://你的用户名.github.io](https://你的用户名.github.io)
+访问已部署的网站：[https://K1Super.github.io](https://K1Super.github.io)
 
 ### 方法二: 本地运行
 
@@ -44,7 +44,7 @@
 #### 安装步骤
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/你的用户名/weblog.git
+git clone https://github.com/K1Super/weblog.git
 
 # 2. 进入项目目录
 cd weblog
@@ -62,13 +62,19 @@ npx http-server . -p 3000
 ## 🔧 配置说明
 
 ### GitHub 数据同步 (推荐)
-1. **创建 GitHub Token**:
-   - 访问 [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens)
-   - 生成新 token，勾选 `gist` 权限
+    **创建 GitHub Token**:
+    1. 访问 https://github.com/settings/tokens
+    2. 点击 "Generate new token (classic)"
+    3. 选择权限：
+   - `repo` - 完全访问私有仓库
+   - `gist` - 创建和修改Gist
+    4. 生成并复制token
 
 2. **创建 GitHub Gist**:
-   - 访问 [gist.github.com](https://gist.github.com)
-   - 创建新 Gist，文件名设为 `projects-data.json`，内容为 `[]`
+   - 访问 https://gist.github.com
+   - 创建新Gist，文件名设为 `about-content.json`
+   - 复制 `gist-data.json` 文件中的content内容
+   - 保存Gist并复制Gist ID（URL中的ID部分）
 
 3. **配置环境变量**:
    编辑 `.env` 文件：
@@ -154,11 +160,11 @@ weblog/
    - Branch 选择 "main"
    - Folder 选择 "/ (root)"
 
-3. **访问网站**: `https://你的用户名.github.io/weblog`
+3. **访问网站**: `https://K1Super.github.io/weblog`
 
 ### 自定义域名
 1. 在 Pages 设置中添加自定义域名
-2. 在域名提供商处配置 CNAME 记录指向 `你的用户名.github.io`
+2. 在域名提供商处配置 CNAME 记录指向 `K1Super.github.io`
 
 ## 🔧 开发指南
 
@@ -215,9 +221,9 @@ npx http-server . -p 3000 -c-1
 
 ## 📞 联系方式
 
-- **项目主页**: [GitHub Repository](https://github.com/你的用户名/weblog)
-- **问题反馈**: [Issues](https://github.com/你的用户名/weblog/issues)
-- **演示网站**: [Live Demo](https://你的用户名.github.io)
+- **项目主页**: [GitHub Repository](https://github.com/K1Super/weblog)
+- **问题反馈**: [Issues](https://github.com/K1Super/weblog/issues)
+- **演示网站**: [Live Demo](https://K1Super.github.io)
 
 ---
 
