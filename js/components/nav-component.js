@@ -2,77 +2,32 @@
 function initNav() {
     const navLinks = document.querySelectorAll('.nav-links a');
     const sections = document.querySelectorAll('.section');
-    
-    // 初始化导航背景
-    navLinks.forEach(link => {
-        const bg = document.createElement('div');
-        bg.className = 'nav-bg';
-        link.appendChild(bg);
-    });
 
     // 设置首页默认激活
     const homeLink = document.querySelector('.nav-links a[href="#home"]');
     if (homeLink) {
         homeLink.classList.add('active');
-        const bg = homeLink.querySelector('.nav-bg');
-        if (bg) {
-            bg.style.transform = 'translateX(0)';
-        }
-        homeLink.style.color = '#ffffff';
     }
 
     // 处理导航点击
     document.querySelector('.nav-links').addEventListener('click', (e) => {
         const link = e.target.closest('a');
         if (!link) return;
-        
+
         e.preventDefault();
         const targetId = link.getAttribute('data-section');
-        
+
         // 更新导航状态
         navLinks.forEach(l => {
-            const bg = l.querySelector('.nav-bg');
             l.classList.remove('active');
-            l.style.color = 'var(--text-color)';
-            if (bg) {
-                bg.style.transform = 'translateX(-100%)';
-            }
         });
 
         // 激活当前导航
         link.classList.add('active');
-        link.style.color = '#ffffff';
-        const activeBg = link.querySelector('.nav-bg');
-        if (activeBg) {
-            activeBg.style.transform = 'translateX(0)';
-        }
-        
+
         // 更新内容区域
         sections.forEach(s => s.classList.remove('active'));
         document.getElementById(targetId)?.classList.add('active');
-    });
-
-    // 处理悬停效果
-    navLinks.forEach(link => {
-        link.addEventListener('mouseenter', () => {
-            if (!link.classList.contains('active')) {
-                const bg = link.querySelector('.nav-bg');
-                if (bg) {
-                    bg.style.transform = 'translateX(0)';
-                    link.style.color = '#ffffff';
-                }
-            }
-        });
-
-        link.addEventListener('mouseleave', () => {
-            if (!link.classList.contains('active')) {
-                const bg = link.querySelector('.nav-bg');
-                if (bg) {
-                    bg.style.transform = 'translateX(-100%)';
-                    link.style.color = 'var(--text-color)';
-                }
-            }
-        });
     });
 }
 
@@ -91,18 +46,72 @@ function initNavigation() {
     
     // 设置导航链接
     const pages = [
-        { id: 'home', icon: 'fas fa-home', name: '首页' },
-        { id: 'projects', icon: 'fas fa-folder', name: '项目集' },
-        { id: 'resources', icon: 'fas fa-database', name: '资源库' },
-        { id: 'about', icon: 'fas fa-user', name: '关于我' }
+        { id: 'home', name: 'Home' },
+        { id: 'projects', name: 'Projects' },
+        { id: 'resources', name: 'Resources' },
+        { id: 'about', name: 'About' }
     ];
     
     navLinks.innerHTML = pages.map(page => `
-        <a href="#${page.id}" data-section="${page.id}">
-            <i class="${page.icon}"></i>
-            <span>${page.name}</span>
-            <div class="nav-bg"></div>
-        </a>
+        <li>
+            <a href="#${page.id}" data-section="${page.id}">
+                <span>${page.name}</span>
+                <div class="star-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <defs></defs>
+                        <g id="Layer_x0020_1">
+                            <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                            <path fill="#fffdef" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                        </g>
+                    </svg>
+                </div>
+                <div class="star-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <defs></defs>
+                        <g id="Layer_x0020_1">
+                            <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                            <path fill="#fffdef" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                        </g>
+                    </svg>
+                </div>
+                <div class="star-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <defs></defs>
+                        <g id="Layer_x0020_1">
+                            <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                            <path fill="#fffdef" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                        </g>
+                    </svg>
+                </div>
+                <div class="star-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <defs></defs>
+                        <g id="Layer_x0020_1">
+                            <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                            <path fill="#fffdef" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                        </g>
+                    </svg>
+                </div>
+                <div class="star-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <defs></defs>
+                        <g id="Layer_x0020_1">
+                            <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                            <path fill="#fffdef" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                        </g>
+                    </svg>
+                </div>
+                <div class="star-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <defs></defs>
+                        <g id="Layer_x0020_1">
+                            <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                            <path fill="#fffdef" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                        </g>
+                    </svg>
+                </div>
+            </a>
+        </li>
     `).join('');
     
     // 初始化导航背景和事件

@@ -25,38 +25,38 @@ class AvatarManager {
 
     // 更新所有页面上的头像
     updateAllAvatars() {
+        console.log('更新头像:', this.currentAvatar);
+
         // 更新登录页头像
         const loginAvatar = document.querySelector('.login-avatar');
         if (loginAvatar) {
             loginAvatar.src = this.currentAvatar;
+            console.log('已更新登录页头像');
         }
 
-        // 更新导航栏头像 - 尝试多种选择器（按实际HTML结构）
-        let navAvatar = document.querySelector('.profile-section .profile-image img');
-        if (!navAvatar) {
-            navAvatar = document.querySelector('#navAvatar');
-        }
+        // 更新导航栏头像 - 修正选择器
+        let navAvatar = document.querySelector('#navAvatar');
         if (!navAvatar) {
             navAvatar = document.querySelector('.profile-section .avatar');
         }
         if (!navAvatar) {
-            navAvatar = document.querySelector('.side-nav .avatar');
-        }
-        if (!navAvatar) {
-            navAvatar = document.querySelector('#mainNavigation .avatar');
+            navAvatar = document.querySelector('.profile-section img');
         }
         if (navAvatar) {
             navAvatar.src = this.currentAvatar;
+            console.log('已更新导航栏头像');
         }
 
         // 更新关于我页面头像
         const aboutAvatar = document.querySelector('.about-content .profile-image img');
         if (aboutAvatar) {
             aboutAvatar.src = this.currentAvatar;
+            console.log('已更新关于页面头像');
         }
 
         // 如果导航栏还没有渲染，延迟再次尝试更新
         if (!navAvatar) {
+            console.log('导航栏头像未找到，延迟重试');
             setTimeout(() => {
                 this.updateAllAvatars();
             }, 500);

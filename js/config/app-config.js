@@ -8,10 +8,10 @@ const CONFIG = Object.freeze({
             description: '半溪明月，一枕清风'
         },
         links: [
-            { id: 'home', icon: 'fas fa-home', text: '首页' },
-            { id: 'projects', icon: 'fas fa-folder', text: '项目集' },
-            { id: 'resources', icon: 'fas fa-database', text: '资源库' },
-            { id: 'about', icon: 'fas fa-user', text: '关于我' }
+            { id: 'home', icon: 'fas fa-home', text: 'Home' },
+            { id: 'projects', icon: 'fas fa-folder', text: 'Projects' },
+            { id: 'resources', icon: 'fas fa-database', text: 'Resources' },
+            { id: 'about', icon: 'fas fa-user', text: 'About' }
         ]
     },
     
@@ -24,10 +24,10 @@ const CONFIG = Object.freeze({
     
     // 导航配置 - 保持与nav.links一致
     navigation: [
-        { id: 'home', label: '首页', icon: 'fas fa-home' },
-        { id: 'projects', label: '项目集', icon: 'fas fa-folder' },
-        { id: 'resources', label: '资源库', icon: 'fas fa-database' },
-        { id: 'about', label: '关于我', icon: 'fas fa-user' }
+        { id: 'home', label: 'Home', icon: 'fas fa-home' },
+        { id: 'projects', label: 'Projects', icon: 'fas fa-folder' },
+        { id: 'resources', label: 'Resources', icon: 'fas fa-database' },
+        { id: 'about', label: 'About', icon: 'fas fa-user' }
     ],
     
     // 登录凭证 (密码已加密存储)
