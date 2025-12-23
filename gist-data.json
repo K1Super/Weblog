@@ -3,7 +3,7 @@
   "public": false,
   "files": {
     "about-content.json": {
-  "content": "{\n  \"name\": \"KLord\",\n  \"title\": \"全栈开发工程师\",\n  \"bio\": \"融汇全栈，精研架构，巧筑实功\",\n  \"hobbies\": [\n    \"编程\",\n    \"音乐\",\n    \"游戏\",\n    \"摄影\",\n    \"旅行\"\n  ],\n  \"quotes\": [\n    {\n      \"text\": \"The only way to do great work is to love what you do.\",\n      \"author\": \"Steve Jobs\"\n    }\n  ],\n  \"contacts\": {\n    \"email\": \"pureyyds@163.com\",\n    \"github\": \"https://github.com/K1Super\",\n    \"qq\": \"2123367071\"\n  }\n}"
+  "content": "{\n  \"name\": \"KLord\",\n  \"title\": \"Full Stack Developer\",\n  \"bio\": \"融汇全栈，精研架构，巧筑实功\",\n  \"hobbies\": [\n    \"编程\",\n    \"音乐\",\n    \"游戏\",\n    \"摄影\",\n    \"旅行\"\n  ],\n  \"quotes\": [\n    {\n      \"text\": \"The only way to do great work is to love what you do.\",\n      \"author\": \"Steve Jobs\"\n    }\n  ],\n  \"contacts\": {\n    \"email\": \"pureyyds@163.com\",\n    \"github\": \"https://github.com/K1Super\",\n    \"qq\": \"2123367071\"\n  }\n}"
     }
   }
 }

@@ -78,10 +78,10 @@ function showCustomConfirm(message, title = '确认操作', confirmText = '确�
 
 // GitHub API 服务
 class GitHubService {
-    constructor() {
+    constructor(filename = 'data.json') {
         this.token = window.GITHUB_TOKEN;
         this.gistId = window.GIST_ID;
-        this.filename = 'projects-data.json';
+        this.filename = filename;
         this.baseUrl = 'https://api.github.com';
     }
 
@@ -168,7 +168,7 @@ class GitHubService {
 class ProjectManager {
     constructor() {
         this.storageKey = 'userProjects';
-        this.githubService = new GitHubService();
+        this.githubService = new GitHubService('projects-data.json');
         this.projects = [];
         this.isManageMode = false; // 管理模式状态
         this.clickOutsideHandler = null; // 点击外部区域的处理函数
@@ -494,7 +494,7 @@ class ResourceManager {
         this.storageKey = 'userResources';
         this.resources = [];
         this.isOnline = false;
-        this.githubService = new GitHubService();
+        this.githubService = new GitHubService('resources-data.json');
         this.init();
     }
 

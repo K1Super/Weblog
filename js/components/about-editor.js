@@ -1,7 +1,7 @@
     // 默认内容，当数据文件不存在时使用
     const DEFAULT_CONTENT = {
         "name": "KLord",
-        "title": "全栈开发工程师",
+        "title": "Full Stack Developer",
         "bio": "融汇全栈，精研架构，巧筑实功",
         "hobbies": [
             "编程",
@@ -403,17 +403,63 @@ class AboutEditor {
         this.originalContent = {};
     }
 
-    // 从数据文件加载内容（模拟持久化）
+    // 从数据文件加载内容（优先从GitHub Gist加载）
     async loadContentFromFile() {
         try {
-            // 在浏览器环境中，我们无法直接读取本地文件
-            // 这里使用localStorage作为桥梁，模拟从文件加载
+            // 首先尝试从GitHub Gist加载
+            const gistContent = await this.loadContentFromGist();
+            if (gistContent) {
+                // 将Gist内容保存到localStorage作为缓存
+                localStorage.setItem('aboutContentFile', JSON.stringify(gistContent));
+                return gistContent;
+            }
+
+            // 如果Gist加载失败，使用localStorage缓存
             const savedContent = localStorage.getItem('aboutContentFile');
             if (savedContent) {
                 return JSON.parse(savedContent);
             }
         } catch (error) {
             console.error('从文件加载内容失败:', error);
+        }
+        return null;
+    }
+
+    // 从GitHub Gist加载内容
+    async loadContentFromGist() {
+        try {
+            const gistId = CONFIG.github.gistId;
+            const token = CONFIG.github.token;
+            const filename = CONFIG.github.filename;
+
+            if (!gistId || !token) {
+                console.warn('GitHub配置不完整，无法从Gist加载内容');
+                return null;
+            }
+
+            // 获取Gist内容
+            const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`GitHub API错误: ${response.status}`);
+            }
+
+            const gistData = await response.json();
+            const fileData = gistData.files[filename];
+
+            if (fileData && fileData.content) {
+                const content = JSON.parse(fileData.content);
+                console.log('成功从GitHub Gist加载内容');
+                return content;
+            }
+
+        } catch (error) {
+            console.error('从GitHub Gist加载内容失败:', error);
         }
         return null;
     }
@@ -437,10 +483,50 @@ class AboutEditor {
 
     // 同步到GitHub
     async syncToGitHub(content) {
-        // 这里可以实现GitHub API调用
-        // 暂时记录到控制台
-        console.log('内容已同步到GitHub:', content);
-        return true;
+        try {
+            const gistId = CONFIG.github.gistId;
+            const token = CONFIG.github.token;
+            const filename = CONFIG.github.filename;
+
+            if (!gistId || !token) {
+                console.warn('GitHub配置不完整，跳过同步');
+                return false;
+            }
+
+            // 准备Gist文件内容
+            const fileContent = JSON.stringify(content, null, 2);
+            const gistData = {
+                files: {
+                    [filename]: {
+                        content: fileContent
+                    }
+                }
+            };
+
+            // 更新Gist
+            const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(gistData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`GitHub API错误: ${response.status} - ${errorData.message}`);
+            }
+
+            const result = await response.json();
+            console.log('内容已成功同步到GitHub Gist:', result.html_url);
+            return true;
+
+        } catch (error) {
+            console.error('同步到GitHub失败:', error);
+            return false;
+        }
     }
 
     // 加载保存的内容

@@ -41,7 +41,7 @@ function initNavigation() {
     profileSection.innerHTML = `
         <img src="${currentAvatar}" alt="个人头像" class="avatar" id="navAvatar">
         <h2>KLord</h2>
-        <p>全栈开发工程师</p>
+        <p>Full Stack Developer</p>
     `;
     
     // 设置导航链接

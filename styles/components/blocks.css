@@ -3568,127 +3568,166 @@ body {
   z-index: 1;
 }
 
-/* Animated Button Styles for Full Stack Developer */
-.button {
-  --black-700: rgb(0 0% 12% / 0.1);
-  --border_radius: 9999px;
-  --transtion: 0.3s ease-in-out;
-  --offset: 2px;
-  --active: 0;
-
-  /* cursor: pointer; */
+button {
   position: relative;
-
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  transform-origin: center;
-
-  padding: 0.55rem 4rem;
+  width: 11em;
+  height: 4em;
+  outline: none;
+  transition: 0.1s;
   background-color: transparent;
-
   border: none;
-  border-radius: var(--border_radius);
-  transform: scale(1);
+  font-size: 13px;
+  font-weight: bold;
+  color: #ddebf0;
 }
 
-.button::before {
-  content: "";
+#clip {
+  --color: #2761c3;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
+  top: 0;
+  overflow: hidden;
   width: 100%;
   height: 100%;
-  background-color: var(--black-700);
-
-  border-radius: var(--border_radius);
-  box-shadow: inset 0 0.5px hsl(0, 0%, 100%), inset 0 -1px 2px 0 hsl(0, 0%, 0%),
-    0px 4px 10px -4px hsla(0 0% 0% / 1),
-    0 0 0 0 hsl(260 97% 50% / 0.75);
-
-  transition: all var(--transtion);
-  z-index: 0;
+  border: 5px double var(--color);
+  box-shadow: inset 0px 0px 15px #195480;
+  -webkit-clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 }
 
-.button::after {
-  content: "";
+.arrow {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  width: 100%;
-  height: 100%;
-  background-color: hsla(260 97% 61% / 0.75);
-  background-image: radial-gradient(
-      at 51% 89%,
-      hsla(266, 45%, 74%, 1) 0px,
-      transparent 50%
-    ),
-    radial-gradient(at 100% 100%, hsla(266, 36%, 60%, 1) 0px, transparent 50%),
-    radial-gradient(at 22% 91%, hsla(266, 36%, 60%, 1) 0px, transparent 50%);
-  background-position: top;
-
-  opacity: var(--active, 0);
-  border-radius: var(--border_radius);
-  transition: opacity var(--transtion);
-  z-index: 2;
+  transition: 0.2s;
+  background-color: #2761c3;
+  top: 35%;
+  width: 11%;
+  height: 30%;
 }
 
-.button .sparkle {
-  position: relative;
-  z-index: 10;
-
-  width: 1.75rem;
+#leftArrow {
+  left: -13.5%;
+  -webkit-clip-path: polygon(100% 0, 100% 100%, 0 50%);
 }
 
-.button .sparkle .path {
-  fill: currentColor;
-  stroke: currentColor;
-
-  transform-origin: center;
-
-  color: hsl(0, 0%, 100%);
+#rightArrow {
+  -webkit-clip-path: polygon(100% 49%, 0 0, 0 100%);
+  left: 102%;
 }
 
-.button .sparkle .path:nth-child(1) {
-  --scale_path_1: 1.2;
-}
-.button .sparkle .path:nth-child(2) {
-  --scale_path_2: 1.2;
-}
-.button .sparkle .path:nth-child(3) {
-  --scale_path_3: 1.2;
+button:hover #rightArrow {
+  background-color: #27c39f;
+  left: -15%;
+  animation: 0.6s ease-in-out both infinite alternate rightArrow8;
 }
 
-@keyframes path {
-  0%,
-  34%,
-  71%,
-  100% {
-    transform: scale(1);
+button:hover #leftArrow {
+  background-color: #27c39f;
+  left: 103%;
+  animation: 0.6s ease-in-out both infinite alternate leftArrow8;
+}
+
+.corner {
+  position: absolute;
+  width: 4em;
+  height: 4em;
+  background-color: #2761c3;
+  box-shadow: inset 1px 1px 8px #2781c3;
+  transform: scale(1) rotate(45deg);
+  transition: 0.2s;
+}
+
+#rightTop {
+  top: -1.98em;
+  left: 91%;
+}
+
+#leftTop {
+  top: -1.96em;
+  left: -3.0em;
+}
+
+#leftBottom {
+  top: 2.10em;
+  left: -2.15em;
+}
+
+#rightBottom {
+  top: 45%;
+  left: 88%;
+}
+
+button:hover #leftTop {
+  animation: 0.1s ease-in-out 0.05s both changeColor8,
+  0.2s linear 0.4s both lightEffect8;
+}
+
+button:hover #rightTop {
+  animation: 0.1s ease-in-out 0.15s both changeColor8,
+  0.2s linear 0.4s both lightEffect8;
+}
+
+button:hover #rightBottom {
+  animation: 0.1s ease-in-out 0.25s both changeColor8,
+  0.2s linear 0.4s both lightEffect8;
+}
+
+button:hover #leftBottom {
+  animation: 0.1s ease-in-out 0.35s both changeColor8,
+  0.2s linear 0.4s both lightEffect8;
+}
+
+button:hover .corner {
+  transform: scale(1.25) rotate(45deg);
+}
+
+button:hover #clip {
+  animation: 0.2s ease-in-out 0.55s both greenLight8;
+  --color: #27c39f;
+}
+
+@keyframes changeColor8 {
+  from {
+    background-color: #2781c3;
   }
-  17% {
-    transform: scale(var(--scale_path_1, 1));
-  }
-  49% {
-    transform: scale(var(--scale_path_2, 1));
-  }
-  83% {
-    transform: scale(var(--scale_path_3, 1));
+
+  to {
+    background-color: #27c39f;
   }
 }
 
-.button .text_button {
-  position: relative;
-  z-index: 10;
+@keyframes lightEffect8 {
+  from {
+    box-shadow: 1px 1px 5px #27c39f;
+  }
 
-  background-image: linear-gradient(90deg, hsla(0 0% 100% / 1) 0%, hsla(0 0% 100% / 1) 120%);
-  background-clip: text;
+  to {
+    box-shadow: 0 0 2px #27c39f;
+  }
+}
 
-  font-size: 1.3rem;
-  color: transparent;
+@keyframes greenLight8 {
+  from {
+  }
+
+  to {
+    box-shadow: inset 0px 0px 32px #27c39f;
+  }
+}
+
+@keyframes leftArrow8 {
+  from {
+    transform: translate(0px);
+  }
+
+  to {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes rightArrow8 {
+  from {
+    transform: translate(0px);
+  }
+
+  to {
+    transform: translateX(-10px);
+  }
 }

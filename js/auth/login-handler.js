@@ -76,8 +76,16 @@ async function handleLogin(event) {
             sessionStorage.setItem('loginStatus', 'true');
             sessionStorage.setItem('token', token);
             sessionStorage.setItem('loginTime', Date.now().toString());
-            // 不再重定向到index.html，而是切换页面状态
-            checkLoginStatus();
+
+            // 显示加载动画
+            const loginLoading = document.getElementById('loginLoading');
+            loginLoading.style.display = 'flex';
+
+            // 2秒后隐藏加载动画并进入主页
+            setTimeout(() => {
+                loginLoading.style.display = 'none';
+                checkLoginStatus();
+            }, 2000);
         } else {
             // 登录失败
             loginAttempts.count++;
@@ -141,7 +149,29 @@ function checkSession() {
 // 定期检查会话
 setInterval(checkSession, 60000);
 
+// 添加回车键登录功能
+function addEnterKeyLogin() {
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+
+    if (usernameInput && passwordInput) {
+        const handleEnterKey = (event) => {
+            if (event.key === 'Enter') {
+                handleLogin(event);
+            }
+        };
+
+        usernameInput.addEventListener('keydown', handleEnterKey);
+        passwordInput.addEventListener('keydown', handleEnterKey);
+    }
+}
+
+// 初始化登录功能
+function initLoginFeatures() {
+    addEnterKeyLogin();
+}
+
 function validateLogin(username, password) {
-    return username === CONFIG.login.username && 
+    return username === CONFIG.login.username &&
            password === CONFIG.login.password;
 }
