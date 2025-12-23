@@ -9,18 +9,42 @@ class AvatarManager {
         this.currentAvatar = this.getCurrentAvatar();
     }
 
-    // 获取当前头像URL
+    // 获取当前头像URL（从aboutEditor获取）
     getCurrentAvatar() {
-        return localStorage.getItem('userAvatar') ||
-               window.DEFAULT_AVATAR ||
+        // 优先从aboutEditor的当前内容获取
+        if (window.aboutEditor && window.aboutEditor.currentContent && window.aboutEditor.currentContent.avatar) {
+            return window.aboutEditor.currentContent.avatar;
+        }
+
+        // 降级到环境变量
+        return window.DEFAULT_AVATAR ||
                'https://ui-avatars.com/api/?name=KLord&size=160&background=4A90E2&color=fff&format=png';
     }
 
-    // 设置头像URL
-    setAvatar(url) {
+    // 设置头像URL（通过aboutEditor保存到GitHub）
+    async setAvatar(url) {
         this.currentAvatar = url;
-        localStorage.setItem('userAvatar', url);
         this.updateAllAvatars();
+
+        // 通过aboutEditor保存到GitHub（不使用localStorage）
+        if (window.aboutEditor) {
+            try {
+                // 更新aboutEditor的当前内容
+                if (!window.aboutEditor.currentContent) {
+                    window.aboutEditor.currentContent = {};
+                }
+                window.aboutEditor.currentContent.avatar = url;
+
+                // 保存到GitHub（这会触发GitHub同步）
+                await window.aboutEditor.saveContentToFile(window.aboutEditor.currentContent);
+                console.log('头像已保存到GitHub，所有访问者都能看到新的头像');
+            } catch (error) {
+                console.error('保存头像失败:', error);
+                // 如果GitHub保存失败，至少保证UI显示正确
+            }
+        } else {
+            console.warn('aboutEditor未初始化，无法保存头像');
+        }
     }
 
     // 更新所有页面上的头像

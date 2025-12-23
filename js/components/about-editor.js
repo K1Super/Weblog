@@ -2,6 +2,7 @@
     const DEFAULT_CONTENT = {
         "name": "KLord",
         "title": "Full Stack Developer",
+        "avatar": "https://ui-avatars.com/api/?name=KLord&size=200&background=4A90E2&color=fff&format=png",
         "bio": "融汇全栈，精研架构，巧筑实功",
         "hobbies": [
             "编程",
@@ -36,6 +37,7 @@
 class AboutEditor {
     constructor() {
         this.originalContent = {};
+        this.currentContent = null; // 当前保存的内容，用于头像管理器访问
         this.isEditing = false;
         this.init();
     }
@@ -278,6 +280,11 @@ class AboutEditor {
     // 收集编辑后的内容
     collectEditedContent() {
         const contentToSave = {};
+
+        // 保存头像URL
+        if (window.avatarManager && window.avatarManager.currentAvatar) {
+            contentToSave.avatar = window.avatarManager.currentAvatar;
+        }
 
         // 保存个人资料
         const nameElement = document.querySelector('.about-profile h2');
@@ -554,6 +561,9 @@ class AboutEditor {
             this.saveContentToFile(content);
         }
 
+        // 设置当前内容供头像管理器访问
+        this.currentContent = content;
+
         // 应用内容到页面
         this.applyContentToPage(content);
     }
@@ -561,6 +571,15 @@ class AboutEditor {
     // 将内容应用到页面
     applyContentToPage(content) {
         console.log('应用内容到页面:', content);
+
+        // 应用头像
+        if (content.avatar) {
+            // 更新全局头像管理器
+            if (window.avatarManager) {
+                window.avatarManager.currentAvatar = content.avatar;
+                window.avatarManager.updateAllAvatars();
+            }
+        }
 
         // 应用个人资料内容
         if (content.name) {
@@ -575,7 +594,14 @@ class AboutEditor {
 
         if (content.bio) {
             const bioElement = document.querySelector('.about-profile .bio');
-            if (bioElement) bioElement.textContent = content.bio;
+            if (bioElement) {
+                // Only update if the content doesn't already contain Chinese characters
+                const currentBio = bioElement.textContent.trim();
+                const hasChinese = /[\u4e00-\u9fff]/.test(currentBio);
+                if (!hasChinese || currentBio !== content.bio) {
+                    bioElement.textContent = content.bio;
+                }
+            }
         }
 
         // 动态创建about-sections内容
